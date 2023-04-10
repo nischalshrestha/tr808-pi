@@ -1,8 +1,8 @@
 # tr808-pi
 
-![A picture of the original Roland TR-808 from Wikipedia](./images/Roland_TR-808.jpg)
+<img alt="A DALL-E picture from a prompt: A drum machine next to a piece of pie" src="./images/A_drum_machine_next_to_a_piece_of_pie.png" width="400" height="400">
 
-*The original Roland TR-808, borrowed from [Wikipedia](https://en.wikipedia.org/wiki/Roland_TR-808#/media/File:Roland_TR-808_(large).jpg)*
+*Art made by [Craiyon, formerly DALL·E mini](https://www.craiyon.com). The prompt: A drum machine next to a piece of pie.*
 
 This project is a demonstration of emulating the Roland TR-808 drum machine in Sonic Pi. I was  inspired by GUI-based versions such as [tr808r](https://coolbutuseless.github.io/package/tr808r/) and [Roland's online version of TR-808](https://roland50.studio) and decided to make a lightweight text-based version. The samples were taken from [this free resource by Michael Fischer](http://machines.hyperreal.org/manufacturers/Roland/TR-808/).
 
@@ -42,6 +42,8 @@ CY ---x---x--------
 OH ----------------
 CH ---x-----x-x----
 ```
+
+Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.TXT) on what sounds the abbreviations map to.
 
 You do not have to worry about new lines before or after the `"` but the rest of the format is strict with no error handling to save you for now :D
 
