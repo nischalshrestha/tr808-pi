@@ -43,7 +43,7 @@ OH ----------------
 CH ---x-----x-x----
 ```
 
-Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.TXT) on what sounds the abbreviations map to.
+Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.txt) on what sounds the abbreviations map to.
 
 You do not have to worry about new lines before or after the `"` but the rest of the format is strict with no error handling to save you for now :D
 
