@@ -90,7 +90,7 @@ def sample_tr808(inst)
       For example, 'BD' for bass drum
 
   Returns:
-      The dictionary.
+      nil
   """
   mapping = get_inst_to_sample
   case inst
@@ -112,7 +112,7 @@ def tr808(src, bpm: 90)
       bpm (int): The bpm, 90 by default.
 
   Returns:
-      The dictionary.
+      nil
   """
   samples_map = parse_beat(src)
   note_value = 0.5 # eighth note
@@ -122,11 +122,46 @@ def tr808(src, bpm: 90)
     # tr808 is 16 notes per measure
     16.times do |i|
       # for each instrument, play the sample if it's a hit
-      samples_map.each do |inst, value|
-        sample_tr808(inst) if value[i] == 1
+      samples_map.each do |inst, hit|
+        if hit[i] == 1
+          sample_tr808(inst)
+        end
       end
+
       # 16th notes
       sleep note_value / 2
+    end
+  end
+end
+
+def sequencer(src, bpm: 90)
+  """
+  Play a live loop of a note sequencer given a note grid and bpm.
+
+  Args:
+      src (str): The string representing the sequencer grid.
+      bpm (int): The bpm, 90 by default.
+
+  Returns:
+      nil
+  """
+  samples_map = parse_beat(src)
+  note_value = 0.5 # eighth note
+
+  with_synth :saw do
+    live_loop :sequencer do
+      use_bpm bpm
+      # note sequencer is also 16 notes per measure
+      16.times do |i|
+        # for each note, play it if it's a hit
+        samples_map.each do |note, hit|
+          if hit[i] == 1
+            play note: note, attack: 0
+          end
+        end
+        # 16th notes
+        sleep note_value / 2
+      end
     end
   end
 end
