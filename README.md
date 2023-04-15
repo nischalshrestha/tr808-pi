@@ -22,52 +22,47 @@ To play the TR-808, you pass a string format to `tr808()` that represents the be
 
 - the left-hand side is the specific instrument (e.g. `BD` for bass drum)
 - followed by a space
-- and 16 `x` (play the note) or `-` (do not play the note)
+- and 16 `x` (play the note) or `-` (do not play the note) with `|` for visual separation of notes
+
+Here's an example of the beat for "1000 Knives" by Yellow Magic Orchestra:
 
 ```
-BD x---------x----x
-SD ----x-------x---
-LT ----x-----------
-MT --x-------------
-HT ------xx--x--x--
-LC ----------------
-MC -x--------------
-HC ----------------
-RS ---x--xxx-------
-CL ----------------
-CP x--------------x
-MA --x--x----------
-CB ----------------
-CY ---x---x--------
-OH ----------------
-CH ---x-----x-x----
+BD xx--|----|xx--|----
+SD ----|----|----|----
+SD ----|----|----|----
+LT ----|----|----|----
+MT ----|----|----|----
+HT ----|----|----|----
+LC ----|----|----|----
+MC ----|----|----|----
+HC ----|----|----|----
+RS ----|x---|----|x---
+CL ----|----|----|----
+CP ----|----|----|--x-
+MA ----|----|----|----
+CB ----|----|----|----
+CY ----|----|----|----
+OH ----|x---|----|x---
+CH --xx|---x|--xx|---x
 ```
 
 Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.txt) on what sounds the abbreviations map to.
 
-You do not have to worry about new lines before or after the `"` but the rest of the format is strict with no error handling to save you for now :D
+You do not have to worry about new lines before or after the `"`. There is no error handling but since this is
+going to be played in a live loop context it won't matter if you mess up the number of notes or `|`: it will just affect
+when the notes are played.
 
-Here's an example of playing a TR-808 beat grid at 120bpm by passing it to `tr808()`:
+Here's an example of playing the beat above by passing it to `tr808()` with some of the instruments removed
+since they're not used.
 
 ```rb
 tr808("
-BD x---------x----x
-SD ----x-------x---
-LT ----x-----------
-MT --x-------------
-HT ------xx--x--x--
-LC ----------------
-MC -x--------------
-HC ----------------
-RS ---x--xxx-------
-CL ----------------
-CP x--------------x
-MA --x--x----------
-CB ----------------
-CY ---x---x--------
-OH ----------------
-CH ---x-----x-x----
-", bpm: 120)
+BD xx--|----|xx--|----
+RS ----|x---|----|x---
+CP ----|----|----|--x-
+OH ----|x---|----|x---
+CH --xx|---x|--xx|---x
+", bpm: 104)
 ```
 
 In the above example, we have a live beat grid with various instruments playing in a measure
@@ -77,20 +72,14 @@ You can refer to some popular TR-808 beats [here](http://808.pixll.de/index.php)
 
 ## Share your beats!
 
-This string is also copy-paste-able text so that you can easily share it with others! The character length is a bit too long for tweets if you choose to use all the instruments. However, if you only plan to use some of them, you remove some out, for example transforming above example to which fits in a tweet:
+This string is also copy-paste-able text so that you can easily share it with others! The character length is a bit too long for tweets if you choose to use all the instruments. However, if you only plan to use some of them, you remove some out, for example transforming the long example above to which fits in a tweet:
 
 ```
-BD x---------x----x
-SD ----x-------x---
-LT ----x-----------
-MT --x-------------
-HT ------xx--x--x--
-MC -x--------------
-RS ---x--xxx-------
-CP x--------------x
-MA --x--x----------
-CY ---x---x--------
-CH ---x-----x-x----
+BD xx--|----|xx--|----
+RS ----|x---|----|x---
+CP ----|----|----|--x-
+OH ----|x---|----|x---
+CH --xx|---x|--xx|---x
 ```
 
 If it's too long, you can [create a gist](https://gist.github.com) and share the link. 

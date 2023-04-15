@@ -66,10 +66,17 @@ def parse_beat(src)
     |line|
     line.split(" ")
   }
-  
+
+  # helper function to split notes of an instrument into an array of 1s and 0s
+  def make_hits(hit_strs)
+    splits = hit_strs.tr('x-', '10').split('')
+    splits = splits.reject { |item| item == "|" }
+    return splits.map(&:to_i)
+  end
+
   # then, create a dictionary of inst => [0s, 1s]
   inst_to_binary = inst_to_hits.map{
-    |k, v| [k.to_sym, v.tr('x-', '10').split('').map(&:to_i)]
+    |k, v| [k.to_sym, make_hits(v)]
   }.to_h
 
   # update global $samples_mapping
