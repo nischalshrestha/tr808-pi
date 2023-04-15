@@ -1,23 +1,51 @@
 
-sample_tr808_grid = \
-"
-BD x-----xx--x----x
-SD ----x-------x---
-LT ----------------
-MT ----------------
-HT ------xx--x--x--
-LC ----------------
-MC ----------------
-HC ----------------
-RS ---x--xxx-------
-CL ----------------
-CP x--------------x
-MA ----------------
-CB ----------------
-CY ----------------
-OH ----------------
-CH x-xxx-xxx-xxx-xx
-"
+# global map for sample to:
+# - path (location of sample dir)
+# - version (which file to pick for sample when there are multiple)
+# - hits (whether to play the instrument or not)
+# then some custom params for sample arguments like BD_amp for amp
+# which will initially set by `setup_samples()`
+$samples_map = {}
+
+$tr808_abbrevs = [
+  "BD", # has multiple versions
+  "SD", # has multiple versions
+  "LT", # has multiple versions
+  "MT", # has multiple versions
+  "HT", # has multiple versions
+  "LC", # has multiple versions
+  "MC", # has multiple versions
+  "HC", # has multiple versions
+  "RS",
+  "CL",
+  "CP",
+  "MA",
+  "CB",
+  "CY", # has multiple versions
+  "OH", # has multiple versions
+  "CH"
+]
+
+def setup_samples()
+  """
+  Initializes the $samples_map hash to map instrument -> params.
+
+  Returns:
+      nil
+  """
+  sample_location = File.dirname(__FILE__) + '/TR808_Samples'
+  $tr808_abbrevs.each do |s|
+    amp_param = "#{s}_amp".to_sym
+    path = "#{sample_location}/#{s}"
+    sym_key = s.to_sym
+    $samples_map[sym_key] = {
+      :path => path,
+      :version => 1, # which file to pick for samples
+      :hits => []
+    }
+    set amp_param, 1.5
+  end
+end
 
 def parse_beat(src)
   """
@@ -29,6 +57,8 @@ def parse_beat(src)
   Returns:
       The dictionary.
   """
+  setup_samples()
+
   splitlines = src.strip.split("\n")
   
   # first, we map each instrument to its hit pattern
@@ -37,41 +67,16 @@ def parse_beat(src)
     line.split(" ")
   }
   
+  # then, create a dictionary of inst => [0s, 1s]
   inst_to_binary = inst_to_hits.map{
-    |k, v| [k, v.tr('x-', '10').split('').map(&:to_i)]
+    |k, v| [k.to_sym, v.tr('x-', '10').split('').map(&:to_i)]
   }.to_h
-  
-  return inst_to_binary
-end
 
-def get_inst_to_sample
-  """
-  Return a dictionary that maps instrument to sample path for the TR-808.
+  # update global $samples_mapping
+  inst_to_binary.each do |k, v|
+    $samples_map[k][:hits] = v
+  end
 
-  Returns:
-      The dictionary.
-  """
-  sample_location = File.dirname(__FILE__) + '/TR808_Samples'
-  puts sample_location
-  tr808_abbrevs = [
-    "BD", # has multiple versions
-    "SD", # has multiple versions
-    "LT", # has multiple versions
-    "MT", # has multiple versions
-    "HT", # has multiple versions
-    "LC", # has multiple versions
-    "MC", # has multiple versions
-    "HC", # has multiple versions
-    "RS",
-    "CL",
-    "CP",
-    "MA",
-    "CB",
-    "CY", # has multiple versions
-    "OH", # has multiple versions
-    "CH"
-  ]
-  return tr808_abbrevs.map{|inst| [inst, "#{sample_location}/#{inst}"]}.to_h
 end
 
 # we can use a function that takes a mapping of instrument to filepath
@@ -92,15 +97,9 @@ def sample_tr808(inst)
   Returns:
       nil
   """
-  mapping = get_inst_to_sample
-  case inst
-  when "CY"
-    sample mapping[inst], "0000", amp: 1
-  when "BD"
-    sample mapping[inst], "1000", amp: 3
-  else
-    sample mapping[inst], 1, amp: 1
-  end
+  sound = $samples_map[inst]
+  sym_key = "#{inst}_amp".to_sym
+  sample sound[:path], sound[:version], amp: get[sym_key]
 end
 
 def tr808(src, bpm: 90)
@@ -114,7 +113,7 @@ def tr808(src, bpm: 90)
   Returns:
       nil
   """
-  samples_map = parse_beat(src)
+  parse_beat(src)
   note_value = 0.5 # eighth note
 
   live_loop :tr808 do
@@ -122,46 +121,34 @@ def tr808(src, bpm: 90)
     # tr808 is 16 notes per measure
     16.times do |i|
       # for each instrument, play the sample if it's a hit
-      samples_map.each do |inst, hit|
-        if hit[i] == 1
+      $samples_map.each do |inst, values|
+        if values[:hits][i] == 1
           sample_tr808(inst)
         end
       end
-
       # 16th notes
       sleep note_value / 2
     end
   end
 end
 
-def sequencer(src, bpm: 90)
+def tweak(inst, **params)
   """
-  Play a live loop of a note sequencer given a note grid and bpm.
+  Tweak a particular instrument's parameter.
+
+  Currently only allows changing `amp`
 
   Args:
-      src (str): The string representing the sequencer grid.
-      bpm (int): The bpm, 90 by default.
+      inst (str): The string representing the instrument (e.g. 'bd' or 'BD')
+      params (hash): Any number of keyword args representing {param: value}
 
-  Returns:
-      nil
   """
-  samples_map = parse_beat(src)
-  note_value = 0.5 # eighth note
+  inst_sym = inst.upcase.to_sym
 
-  with_synth :saw do
-    live_loop :sequencer do
-      use_bpm bpm
-      # note sequencer is also 16 notes per measure
-      16.times do |i|
-        # for each note, play it if it's a hit
-        samples_map.each do |note, hit|
-          if hit[i] == 1
-            play note: note, attack: 0
-          end
-        end
-        # 16th notes
-        sleep note_value / 2
-      end
+  if $samples_map.has_key?(inst_sym)
+    params.each do |arg, value|
+      arg_sym_key = "#{inst_sym.to_s}_#{arg}".to_sym
+      set arg_sym_key, value
     end
   end
 end
