@@ -69,10 +69,10 @@ end
 
 def parse_beat(src)
   """
-  Return a dictionary representing a beat grid for the TR-808.
+  Return a dictionary representing a beat pattern for the TR-808.
 
   Args:
-      src (Integer or Array): The string(s) representing the beat grid.
+      src (Integer or Array): The string(s) representing the beat pattern.
 
   Returns:
       The dictionary.
@@ -91,10 +91,10 @@ def parse_beat(src)
     hits = inst_to_binary(splitlines)
     set_hits(hits)
   elsif src.class == Array
-    # for multiple grids, create hits for each side
-    src.each do |side|
-      side = side.gsub(/^\s+/, '').strip
-      hits = inst_to_binary(side.split("\n"))
+    # for multiple patterns, create hits for each pattern
+    src.each do |pattern|
+      pattern = pattern.gsub(/^\s+/, '').strip
+      hits = inst_to_binary(pattern.split("\n"))
       set_hits(hits)
     end
   end
@@ -105,7 +105,7 @@ end
 # version for ones with multiple versions
 def sample_tr808(inst)
   """
-  Return a dictionary representing a beat grid for the TR-808.
+  Return a dictionary representing a beat pattern for the TR-808.
 
   Note: some instruments like bass drum or 'BD' have multiple versions.
   For now, we have hand-picked one version to pick but in the future we
@@ -123,15 +123,15 @@ def sample_tr808(inst)
   sample sound[:path], sound[:version], amp: get[sym_key]
 end
 
-def tr808(src, bpm: 90, side: [0])
+def tr808(src, bpm: 90, pattern: [0])
   """
-  Play a live loop of the TR-808 given a beat grid and bpm.
+  Play a live loop of the TR-808 given a beat pattern and bpm.
 
   Args:
-      src (String): The string representing the TR-808 beat grid.
+      src (String): The string representing the TR-808 beat pattern.
       bpm (Integer): The bpm, 90 by default.
-      side (Array): An array of which side to play if there are 
-        multiple grids, [0] by default for one single grid
+      pattern (Array): An array of which pattern to play if there are 
+        multiple patterns, [0] by default for one single pattern
 
   Returns:
       nil
@@ -141,14 +141,14 @@ def tr808(src, bpm: 90, side: [0])
 
   live_loop :tr808 do
     use_bpm bpm
-    # tick through the side array to switch between different grids
-    cur_side = side.tick
+    # tick through the pattern array to switch between different patterns
+    cur_pattern = pattern.tick
     # tr808 is 16 notes per measure
     16.times do |i|
       # for each instrument, play the sample if it's a hit
       $samples_map.each do |inst, values|
         hits = values[:hits]
-        if hits.length && cur_side < hits.length && hits[cur_side][i] == 1
+        if hits.length && cur_pattern < hits.length && hits[cur_pattern][i] == 1
           sample_tr808(inst)
         end
       end

@@ -18,7 +18,7 @@ require "~/Documents/projects/tr808-pi/tr808-pi.rb"
 
 ## How do I use it?
 
-To play the TR-808, you pass a string format to `tr808()` that represents the beat grid, where:
+To play the TR-808, you pass a string format to `tr808()` that represents the beat pattern, where:
 
 - the left-hand side is the specific instrument (e.g. `BD` for bass drum)
 - followed by a space
@@ -61,13 +61,13 @@ CH --xx|---x|--xx|---x
 ", bpm: 104)
 ```
 
-In the above example, we have a live beat grid with various instruments playing in a measure which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. Tweak the `x`'s and `-`'s to explore all the fun possibilities!
+In the above example, we have a live beat pattern with various instruments playing in a measure which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. Tweak the `x`'s and `-`'s to explore all the fun possibilities!
 
 ## Multiple patterns
 
-It wouldn't be fun if you could only create one set of beat patterns, so you can also specify multiple grids.
+It wouldn't be fun if you could only create one set of beat patterns, so you can also specify multiple patterns.
 
-To add another pattern you simply need to pass in a list of strings and optionally specify the order to play each pattern with a `side:` parameter that accepts an array of integers corresponding to an item.
+To add another pattern you simply need to pass in a list of strings and optionally specify the order to play each pattern with a `pattern:` parameter that accepts an array of integers corresponding to an item.
 
 Let's modify the above example to add a different pattern:
 
@@ -91,7 +91,7 @@ CH --xx|----|--xx|----
 bpm: 104)
 ```
 
-Without the `side:` argument being set, the `tr808()` will only play the first pattern. So, let's say we want to play each pattern in succession:
+Without the `pattern:` argument being set, the `tr808()` will only play the first pattern. So, let's say we want to play each pattern in succession:
 
 ```rb
 tr808([
@@ -110,10 +110,10 @@ OH ----|x---|----|x---
 CH --xx|----|--xx|----
 "
 ], 
-bpm: 104, side: [0, 1])
+bpm: 104, pattern: [0, 1])
 ```
 
-By specifying `side: [0, 1]`, this plays the first pattern for the first measure, then the second and then cycle back to the first. You can still keep modifying the beat in either pattern and Sonic Pi will pick up the change in the next 16 notes!
+By specifying `pattern: [0, 1]`, this plays the first pattern for the first measure, then the second and then cycle back to the first. You can still keep modifying the beat in either pattern and Sonic Pi will pick up the change in the next 16 notes!
 
 ## Share your beats!
 
