@@ -47,27 +47,14 @@ def setup_samples()
   end
 end
 
-def parse_beat(src)
-  """
-  Return a dictionary representing a beat grid for the TR-808.
-
-  Args:
-      src (int): The string representing the beat grid.
-
-  Returns:
-      The dictionary.
-  """
-  setup_samples()
-
-  splitlines = src.strip.split("\n")
-  
+def inst_to_binary(splitlines)
   # first, we map each instrument to its hit pattern
   inst_to_hits = splitlines.map{
     |line|
     line.split(" ")
   }
 
-  # helper function to split notes of an instrument into an array of 1s and 0s
+  # helper function to split notes of an instrument Integero an array of 1s and 0s
   def make_hits(hit_strs)
     splits = hit_strs.tr('x-', '10').split('')
     splits = splits.reject { |item| item == "|" }
@@ -75,15 +62,42 @@ def parse_beat(src)
   end
 
   # then, create a dictionary of inst => [0s, 1s]
-  inst_to_binary = inst_to_hits.map{
+  return inst_to_hits.map{
     |k, v| [k.to_sym, make_hits(v)]
   }.to_h
+end
 
-  # update global $samples_mapping
-  inst_to_binary.each do |k, v|
-    $samples_map[k][:hits] = v
+def parse_beat(src)
+  """
+  Return a dictionary representing a beat grid for the TR-808.
+
+  Args:
+      src (Integer or Array): The string(s) representing the beat grid.
+
+  Returns:
+      The dictionary.
+  """
+  setup_samples()
+
+  def set_hits(hits)
+    hits.each do |k, v|
+      $samples_map[k][:hits].push(v)
+    end
   end
 
+  if src.class == String
+    # remove indents, leading/trailing newlines, and split on newlines
+    splitlines = src.gsub(/^\s+/, '').strip.split("\n")
+    hits = inst_to_binary(splitlines)
+    set_hits(hits)
+  elsif src.class == Array
+    # for multiple grids, create hits for each side
+    src.each do |side|
+      side = side.gsub(/^\s+/, '').strip
+      hits = inst_to_binary(side.split("\n"))
+      set_hits(hits)
+    end
+  end
 end
 
 # we can use a function that takes a mapping of instrument to filepath
@@ -98,7 +112,7 @@ def sample_tr808(inst)
   could leave that up to the user to pick. 
 
   Args:
-      inst (str): The string representing the abbreviated TR-808 instrument.
+      inst (String): The string representing the abbreviated TR-808 instrument.
       For example, 'BD' for bass drum
 
   Returns:
@@ -109,13 +123,15 @@ def sample_tr808(inst)
   sample sound[:path], sound[:version], amp: get[sym_key]
 end
 
-def tr808(src, bpm: 90)
+def tr808(src, bpm: 90, side: [0])
   """
   Play a live loop of the TR-808 given a beat grid and bpm.
 
   Args:
-      src (str): The string representing the TR-808 beat grid.
-      bpm (int): The bpm, 90 by default.
+      src (String): The string representing the TR-808 beat grid.
+      bpm (Integer): The bpm, 90 by default.
+      side (Array): An array of which side to play if there are 
+        multiple grids, [0] by default for one single grid
 
   Returns:
       nil
@@ -125,11 +141,14 @@ def tr808(src, bpm: 90)
 
   live_loop :tr808 do
     use_bpm bpm
+    # tick through the side array to switch between different grids
+    cur_side = side.tick
     # tr808 is 16 notes per measure
     16.times do |i|
       # for each instrument, play the sample if it's a hit
       $samples_map.each do |inst, values|
-        if values[:hits][i] == 1
+        hits = values[:hits]
+        if hits.length && cur_side < hits.length && hits[cur_side][i] == 1
           sample_tr808(inst)
         end
       end
@@ -146,8 +165,8 @@ def tweak(inst, **params)
   Currently only allows changing `amp`
 
   Args:
-      inst (str): The string representing the instrument (e.g. 'bd' or 'BD')
-      params (hash): Any number of keyword args representing {param: value}
+      inst (String): The string representing the instrument (e.g. 'bd' or 'BD')
+      params (Hash): Any number of keyword args representing {param: value}
 
   """
   inst_sym = inst.upcase.to_sym

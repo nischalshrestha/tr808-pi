@@ -29,7 +29,6 @@ Here's an example of the beat for "1000 Knives" by Yellow Magic Orchestra:
 ```
 BD xx--|----|xx--|----
 SD ----|----|----|----
-SD ----|----|----|----
 LT ----|----|----|----
 MT ----|----|----|----
 HT ----|----|----|----
@@ -48,12 +47,9 @@ CH --xx|---x|--xx|---x
 
 Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.txt) on what sounds the abbreviations map to.
 
-You do not have to worry about new lines before or after the `"`. There is no error handling but since this is
-going to be played in a live loop context it won't matter if you mess up the number of notes or `|`: it will just affect
-when the notes are played.
+You do not have to worry about new lines before or after the `"`. There is no error handling but since this is going to be played in a live loop context it won't matter if you mess up the number of notes or `|`: it will just affect when the notes are played.
 
-Here's an example of playing the beat above by passing it to `tr808()` with some of the instruments removed
-since they're not used.
+Here's an example of playing the beat above by passing it to `tr808()` with some of the instruments removed since they're not used.
 
 ```rb
 tr808("
@@ -65,14 +61,63 @@ CH --xx|---x|--xx|---x
 ", bpm: 104)
 ```
 
-In the above example, we have a live beat grid with various instruments playing in a measure
-which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. Tweak the `x`'s and `-`'s to explore all the fun possibilities!
+In the above example, we have a live beat grid with various instruments playing in a measure which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. Tweak the `x`'s and `-`'s to explore all the fun possibilities!
 
-You can refer to some popular TR-808 beats [here](http://808.pixll.de/index.php).
+## Multiple patterns
+
+It wouldn't be fun if you could only create one set of beat patterns, so you can also specify multiple grids.
+
+To add another pattern you simply need to pass in a list of strings and optionally specify the order to play each pattern with a `side:` parameter that accepts an array of integers corresponding to an item.
+
+Let's modify the above example to add a different pattern:
+
+```rb
+tr808([
+"
+BD xx--|----|xx--|----
+RS ----|x---|----|x---
+CP ----|----|----|--x-
+OH ----|x---|----|x---
+CH --xx|---x|--xx|---x
+",
+"
+BD xx--|----|xx--|---x
+RS ---x|----|---x|----
+CP ----|---x|----|-x-x
+OH ----|x---|----|x---
+CH --xx|----|--xx|----
+"
+], 
+bpm: 104)
+```
+
+Without the `side:` argument being set, the `tr808()` will only play the first pattern. So, let's say we want to play each pattern in succession:
+
+```rb
+tr808([
+"
+BD xx--|----|xx--|----
+RS ----|x---|----|x---
+CP ----|----|----|--x-
+OH ----|x---|----|x---
+CH --xx|---x|--xx|---x
+",
+"
+BD xx--|----|xx--|---x
+RS ---x|----|---x|----
+CP ----|---x|----|-x-x
+OH ----|x---|----|x---
+CH --xx|----|--xx|----
+"
+], 
+bpm: 104, side: [0, 1])
+```
+
+By specifying `side: [0, 1]`, this plays the first pattern for the first measure, then the second and then cycle back to the first. You can still keep modifying the beat in either pattern and Sonic Pi will pick up the change in the next 16 notes!
 
 ## Share your beats!
 
-This string is also copy-paste-able text so that you can easily share it with others! The character length is a bit too long for tweets if you choose to use all the instruments. However, if you only plan to use some of them, you remove some out, for example transforming the long example above to which fits in a tweet:
+This string is also copy-paste-able text so that you can easily share it with others! The character length is a bit too long for tweets if you choose to use all the instruments. However, you can choose to use only a subset of the instruments, and can remove some. For example, transforming the long example above fits in a tweet:
 
 ```
 BD xx--|----|xx--|----
@@ -82,8 +127,10 @@ OH ----|x---|----|x---
 CH --xx|---x|--xx|---x
 ```
 
-If it's too long, you can [create a gist](https://gist.github.com) and share the link. 
+If it's too long, you can [create a gist](https://gist.github.com) and share the link.
 
 Happy beat making y'all!
+
+You can refer to some popular TR-808 beats [here](http://808.pixll.de/index.php).
 
 > **NOTE:** there is no error handling at all so the string format is strict for now. If time permits, I will add enhancements to protect the user, and allow further tweaks to the way the notes are played.
