@@ -115,6 +115,10 @@ bpm: 104, pattern: [0, 1])
 
 By specifying `pattern: [0, 1]`, this plays the first pattern for the first measure, then the second and then cycle back to the first. You can still keep modifying the beat in either pattern and Sonic Pi will pick up the change in the next 16 notes!
 
+## Examples
+
+You can check out [examples](/examples) you can directly copy-paste into Sonic Pi.
+
 ## Share your beats!
 
 This string is also copy-paste-able text so that you can easily share it with others! The character length is a bit too long for tweets if you choose to use all the instruments. However, you can choose to use only a subset of the instruments, and can remove some. For example, transforming the long example above fits in a tweet:
