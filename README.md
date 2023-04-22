@@ -45,9 +45,7 @@ OH ----|x---|----|x---
 CH --xx|---x|--xx|---x
 ```
 
-Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.txt) on what sounds the abbreviations map to.
-
-You do not have to worry about new lines before or after the `"`. There is no error handling but since this is going to be played in a live loop context it won't matter if you mess up the number of notes or `|`: it will just affect when the notes are played.
+> Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.txt) on what sounds the abbreviations map to.
 
 Here's an example of playing the beat above by passing it to `tr808()` with some of the instruments removed since they're not used.
 
@@ -61,7 +59,9 @@ CH --xx|---x|--xx|---x
 ", bpm: 104)
 ```
 
-In the above example, we have a live beat pattern with various instruments playing in a measure which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. Tweak the `x`'s and `-`'s to explore all the fun possibilities!
+In the above example, we have a live beat pattern with various instruments playing in a measure which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. You do not have to worry about new lines before or after the `"`. There is no error handling but since this is going to be played in a live loop context it won't matter if you mess up the number of notes or `|`: it will just affect when the notes are played. 
+
+Tweak the `x`'s and `-`'s to explore all the fun possibilities!
 
 ## Multiple patterns
 
