@@ -64,7 +64,8 @@ CH --xx|---x|--xx|---x
 ", bpm: 104)
 ```
 
-![](demos/1000knivesdemo1.mp4)
+https://user-images.githubusercontent.com/9612286/233800987-ed75f897-dd86-43d4-a03f-049075475b57.mp4
+
 
 > **Note** 
 > When you copy-paste these code snippets, if you turn off auto indentation you can copy this code style. Otherwise, the editor in Sonic Pi will indent the code after copy-paste or running it and it may not look as neat.
@@ -129,7 +130,7 @@ CH --xx|---x|--xx|---x
 bpm: 104, pattern: [0, 1])
 ```
 
-![](demos/1000knivesdemo2.mp4)
+https://user-images.githubusercontent.com/9612286/233801006-448ee689-241f-4c16-86ca-c8fb16ecb687.mp4
 
 By specifying `pattern: [0, 1]`, this plays the first pattern for the first measure, then the second and then cycle back to the first. You can still keep modifying the beat in either pattern and Sonic Pi will pick up the change in the next 16 notes!
 
@@ -160,7 +161,7 @@ BD x---|----|--x-|----
 ], bpm: 160, pattern: [0, 0, 1, 1, 2, 2])
 ```
 
-![](/demos/drumandbassdemo1.mp4)
+https://user-images.githubusercontent.com/9612286/233801015-a242267e-a211-4ff5-a14d-796aff0ab844.mp4
 
 We can re-write this particular `pattern:` using the `knit()` function in Sonic Pi. Instead of:
 
@@ -168,7 +169,7 @@ We can re-write this particular `pattern:` using the `knit()` function in Sonic 
 [0, 0, 1, 1, 2, 2]
 ```
 
-we can use write:
+we can write:
 
 ```rb
 knit(0, 2, 1, 2, 2, 2)
@@ -211,7 +212,7 @@ BD x---|----|--x-|----
 ], bpm: 160, pattern: knit(0, 4, 1, 4, 2, 4))
 ```
 
-![](/demos/drumandbassdemo2.mp4)
+https://user-images.githubusercontent.com/9612286/233801022-39d5b22a-a16f-462d-a114-f7680a8e577f.mp4
 
 ## Examples
 
