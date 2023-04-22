@@ -4,7 +4,11 @@
 
 *Art made by [Craiyon, formerly DALL·E mini](https://www.craiyon.com). The prompt: A drum machine next to a piece of pie.*
 
-This project is a demonstration of emulating the Roland TR-808 drum machine in Sonic Pi. I was  inspired by GUI-based versions such as [tr808r](https://coolbutuseless.github.io/package/tr808r/) and [Roland's online version of TR-808](https://roland50.studio) and decided to make a lightweight text-based version. The samples were taken from [this free resource by Michael Fischer](http://machines.hyperreal.org/manufacturers/Roland/TR-808/).
+This project is a demonstration of emulating the Roland TR-808 drum machine in Sonic Pi. I was inspired by GUI-based versions such as [tr808r](https://coolbutuseless.github.io/package/tr808r/) and [Roland's online version of TR-808](https://roland50.studio) and decided to make a lightweight text-based version. The samples were taken from [this free resource by Michael Fischer](http://machines.hyperreal.org/manufacturers/Roland/TR-808/).
+
+> **Warning**
+
+This is still a work in progress and will likely evolve rapidly, but most of it is already functional and will likely remain the same with possible enhancements and tweaks.
 
 ## How do I get it?
 
@@ -45,7 +49,8 @@ OH ----|x---|----|x---
 CH --xx|---x|--xx|---x
 ```
 
-> Note: refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.txt) on what sounds the abbreviations map to.
+> **Note** 
+> Refer to the [TR808.TXT file of the sample pack](./TR808_Samples/TR808.txt) on what sounds the abbreviations map to.
 
 Here's an example of playing the beat above by passing it to `tr808()` with some of the instruments removed since they're not used.
 
@@ -137,4 +142,6 @@ Happy beat making y'all!
 
 You can refer to some popular TR-808 beats [here](http://808.pixll.de/index.php).
 
-> **NOTE:** there is no error handling at all so the string format is strict for now. If time permits, I will add enhancements to protect the user, and allow further tweaks to the way the notes are played.
+> **Warning** 
+
+There is no error handling at all so the string format is strict for now. If time permits, I will add enhancements to protect the user, and allow further tweaks to the way the notes are played.
