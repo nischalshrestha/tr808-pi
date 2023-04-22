@@ -64,7 +64,14 @@ CH --xx|---x|--xx|---x
 ", bpm: 104)
 ```
 
-In the above example, we have a live beat pattern with various instruments playing in a measure which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. You do not have to worry about new lines before or after the `"`. There is no error handling but since this is going to be played in a live loop context it won't matter if you mess up the number of notes or `|`: it will just affect when the notes are played. 
+![](demos/1000knivesdemo1.mp4)
+
+> **Note** 
+> When you copy-paste these code snippets, if you turn off auto indentation you can copy this code style. Otherwise, the editor in Sonic Pi will indent the code after copy-paste or running it and it may not look as neat.
+
+In the above example, we have a live beat pattern with various instruments playing in a measure which is 16 notes in total. This will keep playing indefinitely because it is a `live_loop` under the hood. You do not have to worry about new lines before or after the `"`. 
+
+There is no error handling but since this is going to be played in a live loop context it won't matter if you mess up the number of notes or `|`: it will just affect when the notes are played. 
 
 Tweak the `x`'s and `-`'s to explore all the fun possibilities!
 
@@ -81,6 +88,7 @@ tr808([
 "
 BD xx--|----|xx--|----
 RS ----|x---|----|x---
+CB ----|----|----|----
 CP ----|----|----|--x-
 OH ----|x---|----|x---
 CH --xx|---x|--xx|---x
@@ -88,9 +96,10 @@ CH --xx|---x|--xx|---x
 "
 BD xx--|----|xx--|---x
 RS ---x|----|---x|----
+CB --xx|-x--|x--x|-xxx
 CP ----|---x|----|-x-x
 OH ----|x---|----|x---
-CH --xx|----|--xx|----
+CH --xx|---x|--xx|---x
 "
 ], 
 bpm: 104)
@@ -103,6 +112,7 @@ tr808([
 "
 BD xx--|----|xx--|----
 RS ----|x---|----|x---
+CB ----|----|----|----
 CP ----|----|----|--x-
 OH ----|x---|----|x---
 CH --xx|---x|--xx|---x
@@ -110,15 +120,98 @@ CH --xx|---x|--xx|---x
 "
 BD xx--|----|xx--|---x
 RS ---x|----|---x|----
+CB --xx|-x--|x--x|-xxx
 CP ----|---x|----|-x-x
 OH ----|x---|----|x---
-CH --xx|----|--xx|----
+CH --xx|---x|--xx|---x
 "
 ], 
 bpm: 104, pattern: [0, 1])
 ```
 
+![](demos/1000knivesdemo2.mp4)
+
 By specifying `pattern: [0, 1]`, this plays the first pattern for the first measure, then the second and then cycle back to the first. You can still keep modifying the beat in either pattern and Sonic Pi will pick up the change in the next 16 notes!
+
+## Using `knit` for pattern sequencing
+
+Let's look at a more complex example. This is a [drum and bass beat](/examples/Drum%20and%20Bass.rb) where we have 3 patterns, and we play each one twice:
+
+```rb
+tr808([
+"
+OH ----|----|----|----
+CH x-x-|x-x-|x-x-|x-x-
+SD ----|x---|----|x---
+BD x---|----|--x-|----
+",
+"
+OH ----|--x-|----|----
+CH x-x-|x-x-|x-x-|x-x-
+SD ----|x--x|-x--|x---
+BD x---|----|--x-|----
+",
+"
+OH ----|--x-|--x-|----
+CH xxxx|xxxx|xxxx|xxxx
+SD ----|x--x|-x--|x---
+BD x---|----|--x-|----
+"
+], bpm: 160, pattern: [0, 0, 1, 1, 2, 2])
+```
+
+![](/demos/drumandbassdemo1.mp4)
+
+We can re-write this particular `pattern:` using the `knit()` function in Sonic Pi. Instead of:
+
+```rb
+[0, 0, 1, 1, 2, 2]
+```
+
+we can use write:
+
+```rb
+knit(0, 2, 1, 2, 2, 2)
+```
+
+This allows us to be more succinct if we wanted more repeats of some patterns. For example, maybe we'd like to play each pattern 4 times. It would be tedious to write:
+
+```rb
+[0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]
+```
+
+when we can write it more succinctly with:
+
+```rb
+knit(0, 4, 1, 4, 2, 4)
+```
+
+Here's the full example:
+
+```rb
+tr808([
+"
+OH ----|----|----|----
+CH x-x-|x-x-|x-x-|x-x-
+SD ----|x---|----|x---
+BD x---|----|--x-|----
+",
+"
+OH ----|--x-|----|----
+CH x-x-|x-x-|x-x-|x-x-
+SD ----|x--x|-x--|x---
+BD x---|----|--x-|----
+",
+"
+OH ----|--x-|--x-|----
+CH xxxx|xxxx|xxxx|xxxx
+SD ----|x--x|-x--|x---
+BD x---|----|--x-|----
+"
+], bpm: 160, pattern: knit(0, 4, 1, 4, 2, 4))
+```
+
+![](/demos/drumandbassdemo2.mp4)
 
 ## Examples
 
